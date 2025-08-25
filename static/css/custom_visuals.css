@@ -61,6 +61,48 @@
     color: #ffffff;
 }
 
+/* 6. File Upload Area */
+.file-upload-area {
+    border: 2px dashed var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.file-upload-area:hover,
+.file-upload-area.dragover {
+    border-color: var(--primary-color);
+    background-color: var(--bg-tertiary);
+}
+
+/* 5. Active Nav Link Indicator */
+.navbar .nav-link {
+    color: rgba(255, 255, 255, 0.7); /* Lighter than text, but not fully white */
+    transition: color 0.3s ease;
+}
+
+.navbar .nav-link:hover {
+    color: #ffffff;
+}
+
+.navbar .nav-link.active {
+    color: #ffffff;
+    font-weight: 600;
+    position: relative;
+}
+
+.navbar .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -5px; /* Position below the link */
+    left: 5%;
+    right: 5%;
+    height: 3px;
+    background-color: #ffffff;
+    border-radius: 2px;
+}
+
 [data-theme="dark"] .status-pausada {
     background-color: #f59e0b; /* Amarelo do tema */
     color: #1e293b;
