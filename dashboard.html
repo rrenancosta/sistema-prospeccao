@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Prospecção de Leads</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="static/css/campanha_recrutamento/style.css">
+    <link rel="stylesheet" href="static/css/custom_visuals.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="dashboard.html">
+                <i class="fas fa-bullhorn me-2"></i>
+                Prospecção de Leads
+            </a>
+            <div class="d-flex align-items-center">
+                <button id="themeToggle" class="btn btn-outline-light me-3" onclick="toggleTheme()">
+                    <i id="theme-icon" class="fas fa-moon"></i>
+                </button>
+                <span class="navbar-text">
+                    <i class="fas fa-user-circle me-1"></i>
+                    Admin
+                </span>
+            </div>
+        </div>
+    </nav>
+    <!-- Main Content -->
+    <div class="container-fluid my-5 px-5" style="max-width: 1600px;">
+        <!-- Dashboard Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="page-title">Dashboard de Prospecção</h1>
+                        <p class="text-muted">Gerencie todas as suas campanhas de prospecção</p>
+                    </div>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCampaignModal">
+                        <i class="fas fa-plus me-2"></i>
+                        Nova Campanha de Prospecção
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title text-muted mb-1">Total de Campanhas</h5>
+                                <h2 class="mb-0" id="totalCampaigns">12</h2>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-bullhorn text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title text-muted mb-1">Campanhas Ativas</h5>
+                                <h2 class="mb-0" id="activeCampaigns">8</h2>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-play text-success"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title text-muted mb-1">Total de Leads</h5>
+                                <h2 class="mb-0" id="totalCandidates">1,247</h2>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-users text-info"></i>                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title text-muted mb-1">Progresso das Campanhas</h5>
+                                <h2 class="mb-0" id="conversionRate">0%</h2>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-chart-line text-warning"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label for="statusFilter" class="form-label">Status</label>
+                                <select id="statusFilter" class="form-select">
+                                    <option value="">Todos os status</option>
+                                    <option value="ativa">Ativa</option>
+                                    <option value="pausada">Pausada</option>
+                                    <option value="finalizada">Finalizada</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="dateFilter" class="form-label">Período</label>
+                                <select id="dateFilter" class="form-select">
+                                    <option value="">Todos os períodos</option>
+                                    <option value="today">Hoje</option>
+                                    <option value="week">Esta semana</option>
+                                    <option value="month">Este mês</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="searchInput" class="form-label">Buscar</label>
+                                <input type="text" id="searchInput" class="form-control" placeholder="Nome da campanha, público-alvo...">
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button id="clearFilters" class="btn btn-outline-secondary w-100">
+                                    <i class="fas fa-times me-1"></i>
+                                    Limpar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Campaigns Table -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list me-2"></i>
+                            Campanhas
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-header">
+                                    <tr>
+                                        <th onclick="sortTable('name')" style="cursor: pointer;">
+                                            Nome da Campanha
+                                            <i class="fas fa-sort ms-1"></i>
+                                        </th>
+                                        <th onclick="sortTable('position')" style="cursor: pointer;">
+                                            Público-alvo
+                                            <i class="fas fa-sort ms-1"></i>
+                                        </th>
+                                        <th onclick="sortTable('status')" style="cursor: pointer;">
+                                            Status
+                                            <i class="fas fa-sort ms-1"></i>
+                                        </th>
+                                        <th onclick="sortTable('candidatesCount')" style="cursor: pointer;">
+                                            Leads
+                                            <i class="fas fa-sort ms-1"></i>
+                                        </th>
+                                        <th onclick="sortTable('progress')" style="cursor: pointer;">
+                                            Progresso
+                                            <i class="fas fa-sort ms-1"></i>
+                                        </th>
+                                        <th onclick="sortTable('created')" style="cursor: pointer;">
+                                            Criada em
+                                            <i class="fas fa-sort ms-1"></i>
+                                        </th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="campaignsTableBody">
+                                    <!-- Campaigns will be populated by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Campaign Modal -->
+    <div class="modal fade" id="addCampaignModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-plus me-2"></i>
+                        Nova Campanha
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Progress Steps -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="text-center flex-fill">
+                                    <div class="step-number active-step" id="step1">1</div>
+                                    <small class="step-label active-step">Informações Básicas</small>
+                                </div>
+                                <div class="progress-line"></div>
+                                <div class="text-center flex-fill">
+                                    <div class="step-number" id="step2">2</div>
+                                    <small class="step-label">Speeches</small>
+                                </div>
+                                <div class="progress-line"></div>
+                                <div class="text-center flex-fill">
+                                    <div class="step-number" id="step3">3</div>
+                                    <small class="step-label">Leads</small>
+                                </div>
+                                <div class="progress-line"></div>
+                                <div class="text-center flex-fill">
+                                    <div class="step-number" id="step4">4</div>
+                                    <small class="step-label">Revisão</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 1: Basic Information -->
+                    <div id="modalStep1" class="modal-step">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="campaignName" class="form-label">Nome da Campanha *</label>
+                                <input type="text" class="form-control" id="campaignName" placeholder="Ex: Prospecção para Startups de IA" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="positionName" class="form-label">Público-alvo *</label>
+                                <input type="text" class="form-control" id="positionName" placeholder="Ex: Diretores de Marketing" required>
+                            </div>
+                            <div class="col-12">
+                                <label for="campaignDescription" class="form-label">Descrição da Campanha</label>
+                                <textarea class="form-control" id="campaignDescription" rows="6" placeholder="Descreva os objetivos e o público-alvo da campanha..."></textarea>
+                            </div>
+                            <div class="col-12">
+                                <label for="campaignSpeech" class="form-label">Speech Principal da Campanha *</label>
+                                <textarea class="form-control" id="campaignSpeech" rows="6" placeholder="Descreva o speech principal (primeiro contato) da campanha..." required></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Speeches -->
+                    <div id="modalStep2" class="modal-step d-none">
+                        <div class="mb-3">
+                            <label class="form-label">Speeches da Campanha</label>
+                            <p class="text-muted small">Adicione múltiplos speeches para diferentes estágios da prospecção.</p>
+                        </div>
+                        <div id="speechesList">
+                            <!-- Speeches will be added dynamically here -->
+                        </div>
+                        <button type="button" class="btn btn-outline-primary" onclick="addSpeech()">
+                            <i class="fas fa-plus me-1"></i>
+                            Adicionar Speech
+                        </button>
+                    </div>
+
+                    <!-- Step 3: Leads -->
+                    <div id="modalStep3" class="modal-step d-none">
+                        <div class="mb-3">
+                            <label class="form-label">Upload de Leads</label>
+                            <p class="text-muted small">Faça upload de um arquivo Excel (.xlsx) com os dados dos leads.</p>
+                        </div>
+                        <div class="mb-3">
+                            <input type="file" class="form-control" id="candidatesFile" accept=".xlsx,.xls" multiple>
+                            <div class="form-text">Formatos aceitos: .xlsx, .xls</div>
+                        </div>
+                        <div id="candidatePreview" class="d-none">
+                            <h6>Preview dos Leads:</h6>
+                            <div id="candidatePreviewList" class="max-height-300 overflow-auto">
+                                <!-- Candidate preview will be shown here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Review -->
+                    <div id="modalStep4" class="modal-step d-none">
+                        <h6>Revisão da Campanha</h6>
+                        <div id="campaignReview">
+                            <!-- Campaign review will be populated -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="prevBtn" onclick="previousStep()" style="display: none;">
+                        <i class="fas fa-arrow-left me-1"></i>
+                        Anterior
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextStep()">
+                        Próximo
+                        <i class="fas fa-arrow-right ms-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Campaign Status Modal -->
+    <div class="modal fade" id="editCampaignModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-edit me-2"></i>
+                        Editar Status da Campanha
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <h6 id="editCampaignName">Nome da Campanha</h6>
+                        <p class="text-muted mb-3" id="editCampaignDescription">Descrição da campanha</p>
+                    </div>
+                    <div class="mb-3">
+                        <label for="campaignStatusSelect" class="form-label">Novo Status</label>
+                        <select class="form-select" id="campaignStatusSelect">
+                            <option value="ativa">Ativa</option>
+                            <option value="pausada">Pausada</option>
+                            <option value="finalizada">Finalizada</option>
+                        </select>
+                    </div>
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Informação:</strong> Alterar o status afetará todas as operações relacionadas a esta campanha.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="updateCampaignStatus()">
+                        <i class="fas fa-save me-1"></i>
+                        Salvar Alterações
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="liveToast" class="toast" role="alert">
+            <div class="toast-header">
+                <i class="fas fa-info-circle me-2 text-primary"></i>
+                <strong class="me-auto">Notificação</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body" id="toastMessage">
+                <!-- Toast message will be populated -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- <script src="static/js/campanha_recrutamento/data.js" defer></script> -->
+    <script src="static/js/campanha_recrutamento/utils.js" defer></script>
+    <script src="static/js/campanha_recrutamento/components.js" defer></script>
+    <script src="static/js/campanha_recrutamento/dashboard.js" defer></script>
+
+</body>
+</html>

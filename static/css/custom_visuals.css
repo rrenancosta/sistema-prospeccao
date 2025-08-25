@@ -1,0 +1,93 @@
+/*
+ * Arquivo para personalizações visuais e correções de estilo.
+ * Carregado após o style.css principal para garantir a precedência.
+ */
+
+/* 1. Esquema de Cores: Roxo -> Azul Escuro */
+:root {
+    --primary-color: #2a3f54; /* Principal tom de azul escuro */
+}
+
+.navbar,
+.table thead th,
+.btn-primary,
+.modal-header,
+.progress-bar {
+    /* Gradiente de azul escuro */
+    background: linear-gradient(135deg, #2a3f54 0%, #1e2a38 100%) !important;
+}
+
+
+/* 2. Margens do Header */
+.navbar > .container-fluid {
+    max-width: 1600px;
+    padding-left: 3rem !important;
+    padding-right: 3rem !important;
+}
+
+
+/* 3. Cor da Fonte do Header */
+.navbar .navbar-brand,
+.navbar .navbar-text,
+.navbar .navbar-brand:hover,
+.navbar .navbar-brand:focus {
+    color: #ffffff; /* Fonte branca */
+}
+
+/* Cor do ícone do tema */
+.navbar #themeToggle {
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.25); /* Borda mais visível */
+}
+.navbar #themeToggle:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+
+/* 4. Correções do Modo Escuro */
+[data-theme="dark"] {
+    /* Garante que o texto geral do card seja branco */
+    --bs-card-color: #f8fafc;
+}
+
+/* Corrigindo texto "muted" no modo escuro */
+[data-theme="dark"] .text-muted {
+    color: var(--text-secondary) !important; /* Usa a variável de texto secundário do tema escuro */
+}
+
+/* Corrigindo badges de status para o modo escuro */
+[data-theme="dark"] .status-ativa {
+    background-color: #10b981; /* Verde do tema */
+    color: #ffffff;
+}
+
+[data-theme="dark"] .status-pausada {
+    background-color: #f59e0b; /* Amarelo do tema */
+    color: #1e293b;
+}
+
+[data-theme="dark"] .status-finalizada {
+    background-color: #ef4444; /* Vermelho do tema */
+    color: #ffffff;
+}
+
+[data-theme="dark"] .status-aguardando {
+    background-color: #06b6d4; /* Ciano do tema */
+    color: #ffffff;
+}
+
+[data-theme="dark"] .status-em-processamento {
+    background-color: #f59e0b; /* Amarelo do tema */
+    color: #1e293b;
+}
+
+[data-theme="dark"] .status-sem-interesse {
+    background-color: #ef4444; /* Vermelho do tema */
+    color: #ffffff;
+}
+
+[data-theme="dark"] .status-fit-5,
+[data-theme="dark"] .status-fit-10 {
+    background-color: #10b981; /* Verde do tema */
+    color: #ffffff;
+}

@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes da Campanha - Prospecção de Leads</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="static/css/campanha_recrutamento/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="dashboard.html">
+                <i class="fas fa-bullhorn me-2"></i>
+                Prospecção de Leads
+            </a>
+            <div class="d-flex align-items-center">
+                <button id="themeToggle" class="btn btn-outline-light me-3" onclick="toggleTheme()">
+                    <i id="theme-icon" class="fas fa-moon"></i>
+                </button>
+                <span class="navbar-text">
+                    <i class="fas fa-user-circle me-1"></i>
+                    Admin
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid mt-4" style="max-width: 1600px;">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="dashboard.html" class="text-decoration-none">
+                        <i class="fas fa-home me-1"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="breadcrumb-item active" id="campaignBreadcrumb">
+                    Detalhes da Campanha
+                </li>
+            </ol>
+        </nav>
+
+        <!-- Campaign Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card campaign-header">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h1 class="campaign-title mb-2" id="campaignTitle">Carregando...</h1>
+                                <p class="campaign-subtitle mb-3" id="campaignSubtitle">Carregando detalhes...</p>
+                                <div class="d-flex align-items-center gap-3">
+                                    <span class="status-badge" id="campaignStatus">Carregando</span>
+                                    <span class="text-muted">
+                                        <i class="fas fa-calendar me-1"></i>
+                                        Criada em <span id="campaignCreated">--</span>
+                                    </span>
+                                    <span class="text-muted">
+                                        <i class="fas fa-users me-1"></i>
+                                        <span id="campaignCandidateCount">0</span> leads
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <div class="btn-group" role="group">
+                                    <button class="btn btn-outline-primary" onclick="openEditCampaignModal()">
+                                        <i class="fas fa-edit me-1"></i>
+                                        Editar
+                                    </button>
+                                    <button class="btn btn-outline-danger" onclick="deleteCampaign()">
+                                        <i class="fas fa-trash me-1"></i>
+                                        Excluir
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Campaign Stats -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title text-muted mb-1">Total de Leads</h5>
+                                <h2 class="mb-0" id="totalCandidatesCount">0</h2>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-users text-info"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title text-muted mb-1">Em Processamento</h5>
+                                <h2 class="mb-0" id="processingCount">0</h2>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-clock text-warning"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title text-muted mb-1">Qualificados</h5>
+                                <h2 class="mb-0" id="qualifiedCount">0</h2>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-check text-success"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title text-muted mb-1">Score Médio</h5>
+                                <h2 class="mb-0" id="averageScore">0</h2>
+                            </div>
+                            <div class="stat-icon">
+                                <i class="fas fa-star text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCandidateModal">
+                                <i class="fas fa-user-plus me-1"></i>
+                                Adicionar Lead
+                            </button>
+                            <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#bulkUploadModal">
+                                <i class="fas fa-upload me-1"></i>
+                                Upload em Massa
+                            </button>
+                            <button class="btn btn-success" id="massActionBtn" onclick="showMassMessageModal()" disabled>
+                                <i class="fas fa-comments me-1"></i>
+                                Ação em Massa
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="exportCandidates()">
+                                <i class="fas fa-download me-1"></i>
+                                Exportar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leads Filters -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label for="candidateStatusFilter" class="form-label">Status</label>
+                                <select id="candidateStatusFilter" class="form-select">
+                                    <option value="">Todos os status</option>
+                                    <option value="em processamento">Em processamento</option>
+                                    <option value="aguardando">Aguardando resposta</option>
+                                    <option value="sem interesse">Sem interesse</option>
+                                    <option value="fit 5">Fit 5</option>
+                                    <option value="fit 10">Fit 10</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="scoreFilter" class="form-label">Score Mínimo</label>
+                                <input type="range" class="form-range" id="scoreFilter" min="0" max="10" step="0.1" value="0">
+                                <div class="d-flex justify-content-between">
+                                    <small>0</small>
+                                    <small id="scoreValue">0</small>
+                                    <small>10</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="candidateSearchInput" class="form-label">Buscar</label>
+                                <input type="text" id="candidateSearchInput" class="form-control" placeholder="Nome, telefone, email...">
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button id="clearCandidateFilters" class="btn btn-outline-secondary w-100">
+                                    <i class="fas fa-times me-1"></i>
+                                    Limpar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Leads Table -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-users me-2"></i>
+                            Leads
+                        </h5>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="selectAllCandidates">
+                            <label class="form-check-label" for="selectAllCandidates">
+                                Selecionar todos os leads
+                            </label>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-header">
+                                    <tr>
+                                        <th width="40"></th>
+                                        <th onclick="sortCandidatesTable('name')" style="cursor: pointer;">
+                                            Nome
+                                            <i class="fas fa-sort ms-1"></i>
+                                        </th>
+                                        <th onclick="sortCandidatesTable('phone')" style="cursor: pointer;">
+                                            Telefone
+                                            <i class="fas fa-sort ms-1"></i>
+                                        </th>
+                                        <th onclick="sortCandidatesTable('email')" style="cursor: pointer;">
+                                            Email
+                                            <i class="fas fa-sort ms-1"></i>
+                                        </th>
+                                        <th onclick="sortCandidatesTable('status')" style="cursor: pointer;">
+                                            Status
+                                            <i class="fas fa-sort ms-1"></i>
+                                        </th>
+                                        <th onclick="sortCandidatesTable('score')" style="cursor: pointer;">
+                                            Score
+                                            <i class="fas fa-sort ms-1"></i>
+                                        </th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="candidatesTableBody">
+                                    <!-- Candidates will be populated by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Lead Modal -->
+    <div class="modal fade" id="addCandidateModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-user-plus me-2"></i>
+                        Adicionar Lead
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addCandidateForm">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label for="candidateName" class="form-label">Nome Completo *</label>
+                                <input type="text" class="form-control" id="candidateName" placeholder="Ex: João Silva Santos" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="candidatePhone" class="form-label">Telefone *</label>
+                                <input type="tel" class="form-control" id="candidatePhone" placeholder="(11) 99999-9999" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="candidateEmail" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="candidateEmail" placeholder="joao@email.com" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="candidateBirthDate" class="form-label">Data de Nascimento</label>
+                                <input type="date" class="form-control" id="candidateBirthDate">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="addIndividualCandidate()">
+                        <i class="fas fa-plus me-1"></i>
+                        Adicionar Lead
+                    </button>.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Upload Modal -->
+    <div class="modal fade" id="bulkUploadModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-upload me-2"></i>
+                        Upload em Massa
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="bulkUploadFile" class="form-label">Arquivo Excel (.xlsx)</label>
+                        <input type="file" class="form-control" id="bulkUploadFile" accept=".xlsx,.xls">
+                        <div class="form-text">Formatos aceitos: .xlsx, .xls</div>
+                    </div>
+                    <div id="bulkUploadPreview" class="d-none">
+                        <h6>Preview dos Leads (<span id="bulkPreviewCount">0</span> encontrados):</h6>
+                        <div id="bulkUploadPreviewList" class="max-height-300 overflow-auto">
+                            <!-- Preview will be shown here -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="bulkUploadBtn" onclick="processBulkUpload()" disabled>
+                        <i class="fas fa-upload me-1"></i>
+                        Processar Upload
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mass Message Modal -->
+    <div class="modal fade" id="massMessageModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-comments me-2"></i>
+                        Enviar Mensagem em Massa
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Leads Selecionados (<span id="selectedCandidatesCount">0</span>):</h6>
+                            <div id="selectedCandidatesList" class="max-height-300 overflow-auto">
+                                <!-- Selected candidates will be shown here -->
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Mensagem:</h6>
+                            <textarea class="form-control" id="massMessageText" rows="12" placeholder="Digite a mensagem que será enviada para todos os leads selecionados..."></textarea>
+                            <div class="form-text mt-2">
+                                <small>
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Use {nome} para personalizar com o nome do lead
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" onclick="sendMassMessage()">
+                        <i class="fas fa-paper-plane me-1"></i>
+                        Enviar Mensagens
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Campaign Modal -->
+    <div class="modal fade" id="editCampaignModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-edit me-2"></i>
+                        Editar Detalhes da Campanha
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Progress Steps -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="text-center flex-fill">
+                                    <div class="step-number active-step" id="editStep1">1</div>
+                                    <small class="step-label active-step">Informações Básicas</small>
+                                </div>
+                                <div class="progress-line"></div>
+                                <div class="text-center flex-fill">
+                                    <div class="step-number" id="editStep2">2</div>
+                                    <small class="step-label">Speeches</small>
+                                </div>
+                                <div class="progress-line"></div>
+                                <div class="text-center flex-fill">
+                                    <div class="step-number" id="editStep3">3</div>
+                                    <small class="step-label">Revisão</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 1: Basic Information -->
+                    <div id="editModalStep1" class="modal-step">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="editCampaignNameInput" class="form-label">Nome da Campanha *</label>
+                                <input type="text" class="form-control" id="editCampaignNameInput" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="editPositionNameInput" class="form-label">Público-alvo *</label>
+                                <input type="text" class="form-control" id="editPositionNameInput" required>
+                            </div>
+                            <div class="col-12">
+                                <label for="editCampaignDescriptionInput" class="form-label">Descrição da Campanha</label>
+                                <textarea class="form-control" id="editCampaignDescriptionInput" rows="3"></textarea>
+                            </div>
+                            <div class="col-12">
+                                <label for="editCampaignSpeechInput" class="form-label">Speech da Campanha *</label>
+                                <textarea class="form-control" id="editCampaignSpeechInput" rows="3" required></textarea>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="editCampaignStatusSelect" class="form-label">Status</label>
+                                <select class="form-select" id="editCampaignStatusSelect">
+                                    <option value="ativa">ATIVA</option>
+                                    <option value="pausada">PAUSADA</option>
+                                    <option value="finalizada">FINALIZADA</option>
+                                </select>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>Informação:</strong> Alterar o status afetará todas as operações relacionadas a esta campanha.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Speeches -->
+                    <div id="editModalStep2" class="modal-step d-none">
+                        <div class="mb-3">
+                            <label class="form-label">Speeches da Campanha</label>
+                            <p class="text-muted small">Edite os speeches para os diferentes estágios da campanha.</p>
+                        </div>
+                        <div id="editSpeechesList">
+                            <!-- Speeches will be added dynamically here -->
+                        </div>
+                        <button type="button" class="btn btn-outline-primary" onclick="addEditSpeech()">
+                            <i class="fas fa-plus me-1"></i>
+                            Adicionar Speech
+                        </button>
+                    </div>
+
+                    <!-- Step 3: Review -->
+                    <div id="editModalStep3" class="modal-step d-none">
+                        <h6>Revisão da Campanha</h6>
+                        <div id="editCampaignReview">
+                            <!-- Review will be populated -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="editPrevBtn" onclick="editPreviousStep()" style="display: none;">
+                        <i class="fas fa-arrow-left me-1"></i>
+                        Anterior
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="editNextBtn" onclick="editNextStep()">
+                        Próximo
+                        <i class="fas fa-arrow-right ms-1"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat History Modal -->
+    <div class="modal fade" id="chatHistoryModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fab fa-whatsapp me-2 text-success"></i>
+                        Histórico de Conversa
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="d-flex">
+                        <!-- Candidate Info Sidebar -->
+                        <div class="chat-sidebar border-end p-3" style="min-width: 280px;">
+                            <div class="text-center mb-3">
+                                <div class="avatar-circle bg-primary text-white mx-auto mb-2" style="width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-user fa-lg"></i>
+                                </div>
+                                <h6 class="mb-1" id="chatCandidateName">Nome do Lead</h6>
+                                <p class="text-muted small mb-2" id="chatCandidatePhone">Telefone</p>
+                                <span class="status-badge" id="chatCandidateStatus">Status</span>
+                            </div>
+                            <div class="candidate-details">
+                                <div class="mb-2">
+                                    <small class="text-muted">Email:</small><br>
+                                    <span id="chatCandidateEmail">email@example.com</span>
+                                </div>
+                                <div class="mb-2">
+                                    <small class="text-muted">Score:</small><br>
+                                    <span class="fw-bold text-primary" id="chatCandidateScore">0</span>/10
+                                </div>
+                                <div class="mb-2">
+                                    <small class="text-muted">Última conversa:</small><br>
+                                    <span id="chatLastDate">--</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Chat Messages -->
+                        <div class="chat-messages flex-grow-1">
+                            <div class="chat-container p-3" id="chatHistoryContainer" style="height: 500px; overflow-y: auto;">
+                                <!-- Messages will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <!-- <button type="button" class="btn btn-success" onclick="openWhatsAppChat()">
+                        <i class="fab fa-whatsapp me-1"></i>
+                        Abrir no WhatsApp
+                    </button> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="liveToast" class="toast" role="alert">
+            <div class="toast-header">
+                <i class="fas fa-info-circle me-2 text-primary"></i>
+                <strong class="me-auto">Notificação</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body" id="toastMessage">
+                <!-- Toast message will be populated -->
+            </div>
+        </div>
+    </div>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script src="static/js/campanha_recrutamento/data.js"></script>
+    <script src="static/js/campanha_recrutamento/utils.js"></script>
+    <script src="static/js/campanha_recrutamento/components.js"></script>
+    <script src="static/js/campanha_recrutamento/campaign_detail.js"></script>
+
+</body>
+</html>

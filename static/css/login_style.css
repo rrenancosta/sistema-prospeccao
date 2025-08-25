@@ -1,0 +1,347 @@
+/* Reset e base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background-image: linear-gradient(to right top, #000670, #0a1989, #122ba3, #153dbe, #144fd9, #1157e6, #0b60f2, #0068ff, #0068ff, #0068ff, #0068ff, #0068ff);  z-index: 0;
+
+}
+
+.background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.card-layout {
+  display: flex;
+  align-items: center;  /* Alinha verticalmente no centro */
+  justify-content: center; /* Opcional: centraliza horizontalmente */
+  gap: 40px; /* Espaçamento entre logo e card */
+  margin-top: 80px; /* Ajuste conforme necessário */
+}
+
+.logo-card {
+  position: relative;
+  width: 160px;   /* Largura desejada */
+  height: 160px;  /* Altura desejada */
+}
+
+.logo-card::before {
+  content: "";
+  position: absolute;
+  inset: 0; /* Preenche toda a .logo-card */
+  background-image: url('/static/assets/image/logo_agence_relatorio_branca_grande.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.8;
+  z-index: 0;
+  transform: scale(2);
+  transform-origin: center;
+}
+
+.card-with-background {
+  position: relative;
+  display: inline-block;
+  margin-left: 30%;
+  margin-top: 8%;
+}
+/* Responsividade */
+@media (max-width: 1024px) {
+  .card-with-background {
+    margin-left: 20%;
+    
+  }
+}
+/* Responsividade */
+@media (max-width: 1400px) {
+  .card-with-background {
+    margin-left: 20%;
+    margin-top: -1%;
+    
+  }
+}
+
+.flash-messages {
+    margin: 10px 0;
+}
+.alert {
+    padding: 10px;
+    border-radius: 5px;
+}
+.alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+/* Pseudo-elemento de fundo */
+.card-with-background::before {
+  content: "";
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  right: -20px;
+  bottom: -20px;
+  background-image: url('/static/assets/image/fundo-geometrico-abstrato-com-linhas-da-matriz-e-dots-conexao-no-conceito-de-tecnologia.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 20px;
+  z-index: 0;
+  opacity: 0.6;
+  transform: scale(1.8);
+  transform-origin: center;
+}
+
+/* Card real */
+.card {
+  position: relative;
+  z-index: 1;
+  background-color:#F3F8FA;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 480px;
+}
+
+
+
+
+.welcome-text {
+  text-align: left;
+  margin-bottom: 25px;
+}
+
+.welcome-text h2 {
+  color: #1e3a8a;
+  font-size: 28px; /* Aumentado para maior destaque */
+  font-weight: 700;
+}
+
+.welcome-text p {
+  color: #6b7280;
+  font-size: 16px; /* Aumentado para melhor legibilidade */
+  margin-top: 8px;
+}
+
+/* Estilo para Inputs */
+.input {
+  width: 100%;
+  height: 50px; /* Aumentado para maior tamanho */
+  padding: 0 15px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background-color: #E8F0FE;
+  font-size: 16px; /* Aumentado para melhor legibilidade */
+  color: #374151;
+  margin: 15px 0;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input:focus {
+  border-color: #1e3a8a;
+}
+
+/* Botão refinado */
+.button {
+  height: 50px; /* Aumentado para maior tamanho */
+  border: none;
+  border-radius: 8px;
+  background-color: #1e3a8a;
+  color: #ffffff;
+  font-size: 16px; /* Aumentado para melhor legibilidade */
+  font-weight: 500;
+  margin-top: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 100%;
+}
+
+.button:hover {
+  background-color: #2b4bb8;
+}
+
+/* Estilo do botão Google */
+.gsi-material-button {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: #f2f2f2;
+  background-image: none;
+  border: none;
+  -webkit-border-radius: 24px;
+  border-radius: 24px;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  color: #1f1f1f;
+  cursor: pointer;
+  font-family: 'Roboto', arial, sans-serif;
+  font-size: 16px; /* Aumentado para melhor legibilidade */
+  height: 50px; /* Aumentado para maior tamanho */
+  letter-spacing: 0.25px;
+  outline: none;
+  overflow: hidden;
+  padding: 0 15px;
+  position: relative;
+  text-align: center;
+  -webkit-transition: background-color .218s, border-color .218s, box-shadow .218s;
+  transition: background-color .218s, border-color .218s, box-shadow .218s;
+  vertical-align: middle;
+  white-space: nowrap;
+  width: 100%;
+  max-width: 480px;
+  min-width: min-content;
+}
+
+.gsi-material-button .gsi-material-button-icon {
+  height: 24px; /* Aumentado para maior tamanho */
+  margin-right: 15px;
+  min-width: 24px;
+  width: 24px;
+}
+
+.gsi-material-button .gsi-material-button-content-wrapper {
+  -webkit-align-items: center;
+  align-items: center;
+  display: flex;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  -webkit-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  height: 100%;
+  justify-content: space-between;
+  position: relative;
+  width: 100%;
+}
+
+.gsi-material-button .gsi-material-button-contents {
+  -webkit-flex-grow: 1;
+  flex-grow: 1;
+  font-family: 'Roboto', arial, sans-serif;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: top;
+}
+
+.gsi-material-button .gsi-material-button-state {
+  -webkit-transition: opacity .218s;
+  transition: opacity .218s;
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.gsi-material-button:disabled {
+  cursor: default;
+  background-color: #ffffff61;
+}
+
+.gsi-material-button:disabled .gsi-material-button-state {
+  background-color: #1f1f1f1f;
+}
+
+.gsi-material-button:disabled .gsi-material-button-contents {
+  opacity: 38%;
+}
+
+.gsi-material-button:disabled .gsi-material-button-icon {
+  opacity: 38%;
+}
+
+.gsi-material-button:not(:disabled):active .gsi-material-button-state, 
+.gsi-material-button:not(:disabled):focus .gsi-material-button-state {
+  background-color: #001d35;
+  opacity: 12%;
+}
+
+.gsi-material-button:not(:disabled):hover {
+  -webkit-box-shadow: 0 1px 2px 0 rgba(60, 64, 67, .30), 0 1px 3px 1px rgba(60, 64, 67, .15);
+  box-shadow: 0 1px 2px 0 rgba(60, 64, 67, .30), 0 1px 3px 1px rgba(60, 64, 67, .15);
+}
+
+.gsi-material-button:not(:disabled):hover .gsi-material-button-state {
+  background-color: #001d35;
+  opacity: 8%;
+}
+
+/* Mensagem de erro */
+.error-message {
+  color: #dc3545;
+  margin-top: 12px;
+  font-size: 14px; /* Aumentado para melhor legibilidade */
+  text-align: center;
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+  .card {
+    width: 400px;
+    margin-right: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .card {
+    width: 320px;
+    margin-right: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    justify-content: center;
+  }
+  .card {
+    width: 90%;
+    margin-right: 0;
+    margin: 0 auto;
+    padding: 25px;
+  }
+  .welcome-text h2 {
+    font-size: 22px;
+  }
+  .welcome-text p {
+    font-size: 14px;
+  }
+  .input {
+    height: 45px;
+    font-size: 14px;
+  }
+  .button {
+    height: 45px;
+    font-size: 14px;
+  }
+  .gsi-material-button {
+    height: 45px;
+    font-size: 14px;
+  }
+  .gsi-material-button .gsi-material-button-icon {
+    height: 20px;
+    width: 20px;
+    margin-right: 12px;
+  }
+}
