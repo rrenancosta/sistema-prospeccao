@@ -44,6 +44,7 @@ body {
 
 /* Navigation */
 .navbar {
+    /* Mantém !important apenas para garantir sobreposição do tema */
     background: linear-gradient(135deg, var(--primary-color) 0%, #8b5cf6 100%) !important;
     box-shadow: var(--shadow-lg);
     backdrop-filter: blur(10px);
@@ -56,7 +57,7 @@ body {
     letter-spacing: -0.025em;
 }
 
-/* Theme Toggle */
+/* Theme Toggle - botão de alternância de tema */
 .theme-toggle {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -94,7 +95,7 @@ body {
     padding: 1.5rem;
 }
 
-/* Enhanced Tables */
+/* Tabelas aprimoradas para histórico e uploads */
 .table {
     color: var(--text-primary);
     background: transparent;
@@ -163,7 +164,7 @@ body {
     vertical-align: middle;
 }
 
-/* Enhanced Buttons */
+/* Botões aprimorados para ações e uploads */
 .btn {
     border-radius: 12px;
     font-weight: 600;
@@ -193,7 +194,7 @@ body {
     transform: translateY(-1px);
 }
 
-/* Status badges */
+/* Badges de status para tabelas e histórico */
 .status-badge {
     padding: 0.5rem 1rem;
     border-radius: 50px;
@@ -250,12 +251,12 @@ body {
     font-weight: 600;
 }
 
-/* Progress bars */
+/* Barra de progresso compacta */
 .progress-sm {
     height: 0.5rem;
 }
 
-/* Enhanced Modals */
+/* Modais aprimorados para formulários e revisão */
 .modal-content {
     background: var(--bg-primary);
     border: 1px solid var(--border-color);

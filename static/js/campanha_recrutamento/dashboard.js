@@ -20,12 +20,55 @@ const DEFAULT_QUESTIONS = [
 document.addEventListener('DOMContentLoaded', function() {
     setupEventListeners();
     loadCampaigns();
+
+    // Adiciona listeners para ordenação das colunas da tabela
+    document.querySelectorAll('.table-header th').forEach(th => {
+        th.addEventListener('click', function() {
+            const columnMap = {
+                'Nome da Campanha': 'name',
+                'Público-alvo': 'position',
+                'Status': 'status',
+                'Leads': 'candidatesCount',
+                'Progresso': 'progress',
+                'Criada em': 'created'
+            };
+            const text = th.textContent.trim().replace(/\s+/g, ' ');
+            if (columnMap[text]) {
+                sortTable(columnMap[text]);
+            }
+        });
+    });
+
+    // Adiciona listener para botão Adicionar Speech
+    const addSpeechBtn = document.querySelector('#modalStep2 .btn.btn-outline-primary');
+    if (addSpeechBtn) {
+        addSpeechBtn.addEventListener('click', addSpeech);
+    }
+
+    // Botão Anterior (modal)
+    const prevBtn = document.getElementById('prevBtn');
+    if (prevBtn) {
+        prevBtn.addEventListener('click', previousStep);
+    }
+
+    // Botão Próximo (modal)
+    const nextBtn = document.getElementById('nextBtn');
+    if (nextBtn) {
+        nextBtn.addEventListener('click', nextStep);
+    }
+
+    // Botão Salvar Alterações (modal de status)
+    const saveStatusBtn = document.querySelector('#editCampaignModal .btn.btn-primary');
+    if (saveStatusBtn) {
+        saveStatusBtn.addEventListener('click', updateCampaignStatus);
+    }
 });
 
 // ...existing code...
 
 /**
- * Setup event listeners
+ * Setup event listeners for dashboard page
+ * @returns {void}
  */
 function setupEventListeners() {
     // Search input
@@ -33,30 +76,30 @@ function setupEventListeners() {
     if (searchInput) {
         searchInput.addEventListener('input', applyFilters);
     }
-    
+
     // Filter selects
     const statusFilter = document.getElementById('statusFilter');
     if (statusFilter) {
         statusFilter.addEventListener('change', applyFilters);
     }
-    
+
     const dateFilter = document.getElementById('dateFilter');
     if (dateFilter) {
         dateFilter.addEventListener('change', applyFilters);
     }
-    
+
     // Clear filters button
     const clearFilters = document.getElementById('clearFilters');
     if (clearFilters) {
         clearFilters.addEventListener('click', clearAllFilters);
     }
-    
+
     // Modal events
     const addCampaignModal = document.getElementById('addCampaignModal');
     if (addCampaignModal) {
         addCampaignModal.addEventListener('show.bs.modal', resetModal);
     }
-    
+
     // Setup file upload preview
     setupCandidateFilePreview();
 }
