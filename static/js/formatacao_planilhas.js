@@ -1,47 +1,57 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // --- State for the RD Station dual upload ---
+    const rdUploadState = {
+        agence: false,
+        outra: false,
+    };
+
     // --- Reusable Uploader Initialization Function ---
-    const initializeUploader = (type) => {
+    const initializeUploader = (type, onFileSelectedCallback) => {
         const fileUploadArea = document.getElementById(`${type}FileUploadArea`);
         const fileInput = document.getElementById(`${type}FileInput`);
         const selectFileBtn = document.getElementById(`${type}SelectFileBtn`);
         const fileNameDisplay = document.getElementById(`${type}FileName`);
         const startFormattingBtn = document.getElementById(`${type}StartFormattingBtn`);
 
-        if (!fileUploadArea) {
-            // If the elements for this type don't exist, do nothing.
-            return;
-        }
+        if (!fileUploadArea) return;
 
         const handleFile = (file) => {
             if (file) {
-                fileNameDisplay.textContent = `Arquivo selecionado: ${file.name}`;
-                startFormattingBtn.disabled = false;
+                fileNameDisplay.textContent = `Arquivo: ${file.name}`;
+                if (startFormattingBtn) {
+                    startFormattingBtn.disabled = false;
+                }
+                // Execute callback if it exists
+                if (onFileSelectedCallback) {
+                    onFileSelectedCallback(true);
+                }
             } else {
                 fileNameDisplay.textContent = '';
-                startFormattingBtn.disabled = true;
+                if (startFormattingBtn) {
+                    startFormattingBtn.disabled = true;
+                }
+                if (onFileSelectedCallback) {
+                    onFileSelectedCallback(false);
+                }
             }
         };
 
-        // Event listener for the "select file" button
-        selectFileBtn.addEventListener('click', () => {
-            fileInput.click();
-        });
-
-        // Event listener for the main upload area
+        selectFileBtn.addEventListener('click', () => fileInput.click());
         fileUploadArea.addEventListener('click', (e) => {
             if (e.target !== selectFileBtn && !selectFileBtn.contains(e.target)) {
                 fileInput.click();
             }
         });
 
-        // Handle file selection via the hidden file input
         fileInput.addEventListener('change', () => {
             if (fileInput.files.length > 0) {
                 handleFile(fileInput.files[0]);
+            } else {
+                // This handles the case where the user opens the file dialog and cancels
+                handleFile(null);
             }
         });
 
-        // --- Drag and Drop Event Handlers ---
         fileUploadArea.addEventListener('dragover', (e) => {
             e.preventDefault();
             fileUploadArea.classList.add('dragover');
@@ -56,10 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
             fileUploadArea.classList.remove('dragover');
             if (e.dataTransfer.files.length > 0) {
                 const file = e.dataTransfer.files[0];
-                const allowedTypes = [
-                    'application/vnd.ms-excel',
-                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                ];
+                const allowedTypes = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
                 const isExcelFile = allowedTypes.includes(file.type) || file.name.endsWith('.xls') || file.name.endsWith('.xlsx');
 
                 if (isExcelFile) {
@@ -72,16 +79,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // --- Initialize both uploaders ---
+    // --- Function to check and set the comparison button state ---
+    const checkComparisonButtonState = () => {
+        const comparisonBtn = document.getElementById('rdStartComparisonBtn');
+        if (rdUploadState.agence && rdUploadState.outra) {
+            comparisonBtn.disabled = false;
+        } else {
+            comparisonBtn.disabled = true;
+        }
+    };
+
+    // --- Initialize all four uploaders ---
     initializeUploader('leads');
     initializeUploader('prospects');
+    initializeUploader('rdAgence', (isFileSelected) => {
+        rdUploadState.agence = isFileSelected;
+        checkComparisonButtonState();
+    });
+    initializeUploader('rdOutra', (isFileSelected) => {
+        rdUploadState.outra = isFileSelected;
+        checkComparisonButtonState();
+    });
 
     // --- Event Delegation for Table Actions ---
     const tabContent = document.getElementById('formattingTypeTabContent');
     tabContent.addEventListener('click', (e) => {
         const targetButton = e.target.closest('button');
         if (!targetButton || !targetButton.closest('tbody')) {
-            // Exit if the click was not on a button inside a table body
             return;
         }
 
