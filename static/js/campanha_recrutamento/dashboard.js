@@ -18,35 +18,11 @@ const DEFAULT_QUESTIONS = [
 
 // Initialize dashboard
 document.addEventListener('DOMContentLoaded', function() {
-    initializeTheme();
     setupEventListeners();
     loadCampaigns();
 });
 
-/**
- * Initialize and toggle theme
- */
-function initializeTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    updateThemeIcon(savedTheme);
-}
-
-function toggleTheme() {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-    updateThemeIcon(newTheme);
-}
-
-function updateThemeIcon(theme) {
-    const themeIcon = document.getElementById('theme-icon');
-    if (themeIcon) {
-        themeIcon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-    }
-}
+// ...existing code...
 
 /**
  * Setup event listeners

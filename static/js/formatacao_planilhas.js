@@ -1,4 +1,29 @@
 document.addEventListener('DOMContentLoaded', () => {
+
+    // --- Dark Mode Theme Functions (copiados de dashboard.js) ---
+    function initializeTheme() {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+    }
+
+    function toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeIcon(newTheme);
+    }
+
+    function updateThemeIcon(theme) {
+        const themeIcon = document.getElementById('theme-icon');
+        if (themeIcon) {
+            themeIcon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+    }
+
+    initializeTheme();
+
     // --- State for the RD Station dual upload ---
     const rdUploadState = {
         agence: false,
@@ -6,8 +31,14 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // --- Reusable Uploader Initialization Function ---
+    // Corrigindo os IDs para RD Station
     const initializeUploader = (type, onFileSelectedCallback) => {
-        const fileUploadArea = document.getElementById(`${type}FileUploadArea`);
+        // IDs para RD Station
+        let fileUploadAreaId = `${type}FileUploadArea`;
+        if (type === 'rdAgence') fileUploadAreaId = 'rdAgenceUploadArea';
+        if (type === 'rdOutra') fileUploadAreaId = 'rdOutraUploadArea';
+
+        const fileUploadArea = document.getElementById(fileUploadAreaId);
         const fileInput = document.getElementById(`${type}FileInput`);
         const selectFileBtn = document.getElementById(`${type}SelectFileBtn`);
         const fileNameDisplay = document.getElementById(`${type}FileName`);
@@ -21,7 +52,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (startFormattingBtn) {
                     startFormattingBtn.disabled = false;
                 }
-                // Execute callback if it exists
                 if (onFileSelectedCallback) {
                     onFileSelectedCallback(true);
                 }
@@ -47,7 +77,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (fileInput.files.length > 0) {
                 handleFile(fileInput.files[0]);
             } else {
-                // This handles the case where the user opens the file dialog and cancels
                 handleFile(null);
             }
         });
