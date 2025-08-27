@@ -1,195 +1,179 @@
-    /**
-     * Exibe uma notificação toast para feedback ao usuário
-     * @param {string} message - Mensagem a ser exibida
-     * @param {'success'|'error'|'info'} [type='info'] - Tipo de mensagem
-     */
-    function showToast(message, type = 'info') {
-        const toast = document.getElementById('liveToast');
-        const toastMessage = document.getElementById('toastMessage');
-        if (!toast || !toastMessage) return;
-        toastMessage.textContent = message;
-        toast.className = 'toast show';
-        toast.classList.remove('bg-success', 'bg-danger', 'bg-info');
-        if (type === 'success') toast.classList.add('bg-success');
-        else if (type === 'error') toast.classList.add('bg-danger');
-        else toast.classList.add('bg-info');
-        setTimeout(() => { toast.classList.remove('show'); }, 3000);
+/**
+ * Exibe uma notificação toast para feedback ao usuário.
+ * Certifique-se de que seu HTML tem os elementos com os IDs 'liveToast' e 'toastMessage'.
+ * @param {string} message - Mensagem a ser exibida.
+ * @param {'success'|'error'|'info'} [type='info'] - Tipo de mensagem (controla a cor).
+ */
+function showToast(message, type = 'info') {
+    const toastEl = document.getElementById('liveToast');
+    const toastMessageEl = document.getElementById('toastMessage');
+    if (!toastEl || !toastMessageEl) {
+        console.error("Elementos do Toast não encontrados no HTML!");
+        alert(message); // Usa um alert como alternativa se o toast não existir
+        return;
     }
+    toastMessageEl.textContent = message;
+    
+    // Garante que a instância do Toast do Bootstrap seja criada
+    const bsToast = bootstrap.Toast.getOrCreateInstance(toastEl);
+
+    // Remove classes de cor antigas e adiciona a nova
+    toastEl.classList.remove('bg-success', 'bg-danger', 'bg-info');
+    if (type === 'success') toastEl.classList.add('bg-success');
+    else if (type === 'error') toastEl.classList.add('bg-danger');
+    else toastEl.classList.add('bg-info');
+    
+    bsToast.show();
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
-    // Event listeners para botões do modal de campanha
-    const addSpeechBtn = document.querySelector('#modalStep2 .btn.btn-outline-primary');
-    if (addSpeechBtn) {
-        addSpeechBtn.addEventListener('click', addSpeech);
+    // Elementos principais
+    const uploadArea = document.getElementById('leadsFileUploadArea');
+    const selectFileBtn = document.getElementById('leadsSelectFileBtn');
+    const fileInput = document.getElementById('leadsFileInput');
+    const fileNameEl = document.getElementById('leadsFileName');
+    const startFormattingBtn = document.getElementById('leadsStartFormattingBtn');
+
+    if (!uploadArea || !selectFileBtn || !fileInput || !fileNameEl || !startFormattingBtn) {
+        console.error("Algum elemento de upload não foi encontrado no HTML.");
+        return;
     }
 
-    const prevBtn = document.getElementById('prevBtn');
-    if (prevBtn) {
-        prevBtn.addEventListener('click', previousStep);
+    // Função para validar arquivo
+    function validateFile(file) {
+        if (!file) return { valid: false, message: 'Nenhum arquivo selecionado.' };
+        const allowedTypes = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+        const allowedExts = ['.xls', '.xlsx'];
+        const maxSize = 5 * 1024 * 1024; // 5MB
+        const ext = file.name.slice(file.name.lastIndexOf('.')).toLowerCase();
+        if (!allowedExts.includes(ext)) {
+            return { valid: false, message: 'Formato inválido. Só aceitamos .xls ou .xlsx.' };
+        }
+        if (file.size > maxSize) {
+            return { valid: false, message: 'Arquivo muito grande. Máximo 5MB.' };
+        }
+        return { valid: true };
     }
 
-    const nextBtn = document.getElementById('nextBtn');
-    if (nextBtn) {
-        nextBtn.addEventListener('click', nextStep);
-    }
-
-    const saveStatusBtn = document.querySelector('#editCampaignModal .btn.btn-primary');
-    if (saveStatusBtn) {
-        saveStatusBtn.addEventListener('click', updateCampaignStatus);
-    }
-
-
-    // Dark mode agora é gerenciado globalmente por theme.js
-
-    // --- State for the RD Station dual upload ---
-    const rdUploadState = {
-        agence: false,
-        outra: false,
-    };
-
-    /**
-     * Inicializa o uploader de arquivos para cada tipo de planilha
-     * @param {string} type - Tipo de uploader (leads, prospects, rdAgence, rdOutra)
-     * @param {function} [onFileSelectedCallback] - Callback opcional para estado do arquivo
-     */
-    const MAX_FILE_SIZE_MB = 5;
-    const initializeUploader = (type, onFileSelectedCallback) => {
-        // IDs para RD Station
-        let fileUploadAreaId = `${type}FileUploadArea`;
-        if (type === 'rdAgence') fileUploadAreaId = 'rdAgenceUploadArea';
-        if (type === 'rdOutra') fileUploadAreaId = 'rdOutraUploadArea';
-
-        const fileUploadArea = document.getElementById(fileUploadAreaId);
-        const fileInput = document.getElementById(`${type}FileInput`);
-        const selectFileBtn = document.getElementById(`${type}SelectFileBtn`);
-        const fileNameDisplay = document.getElementById(`${type}FileName`);
-        const startFormattingBtn = document.getElementById(`${type}StartFormattingBtn`);
-
-    if (!fileUploadArea || !fileInput || !selectFileBtn || !fileNameDisplay) return;
-
-    /**
-     * Atualiza o estado do upload e exibe nome do arquivo
-     * @param {File|null} file - Arquivo selecionado ou null
-     */
-    const handleFile = (file) => {
+    // Atualiza nome do arquivo e habilita botão
+    function updateFileState(file) {
         if (file) {
-            // Validação de tamanho
-            if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
-                fileNameDisplay.textContent = '';
-                if (startFormattingBtn) startFormattingBtn.disabled = true;
-                showToast(`Arquivo excede o limite de ${MAX_FILE_SIZE_MB}MB.`, 'error');
-                if (onFileSelectedCallback) onFileSelectedCallback(false);
-                return;
-            }
-            fileNameDisplay.textContent = `Arquivo: ${file.name}`;
-            if (startFormattingBtn) startFormattingBtn.disabled = false;
-            if (onFileSelectedCallback) onFileSelectedCallback(true);
+            fileNameEl.textContent = file.name;
+            startFormattingBtn.disabled = false;
         } else {
-            fileNameDisplay.textContent = '';
-            if (startFormattingBtn) startFormattingBtn.disabled = true;
-            if (onFileSelectedCallback) onFileSelectedCallback(false);
+            fileNameEl.textContent = '';
+            startFormattingBtn.disabled = true;
         }
-    };
+    }
 
-        selectFileBtn.addEventListener('click', () => fileInput.click());
-        fileUploadArea.addEventListener('click', (e) => {
-            if (e.target !== selectFileBtn && !selectFileBtn.contains(e.target)) {
-                fileInput.click();
-            }
-        });
-
-        fileInput.addEventListener('change', () => {
-            if (fileInput.files.length > 0) {
-                handleFile(fileInput.files[0]);
-                if (fileInput.files[0] && fileInput.files[0].size <= MAX_FILE_SIZE_MB * 1024 * 1024) {
-                    showToast('Arquivo selecionado com sucesso!', 'success');
-                }
-            } else {
-                handleFile(null);
-            }
-        });
-
-        fileUploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            fileUploadArea.classList.add('dragover');
-        });
-
-        fileUploadArea.addEventListener('dragleave', () => {
-            fileUploadArea.classList.remove('dragover');
-        });
-
-        fileUploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            fileUploadArea.classList.remove('dragover');
-            if (e.dataTransfer.files.length > 0) {
-                const file = e.dataTransfer.files[0];
-                const allowedTypes = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
-                const isExcelFile = allowedTypes.includes(file.type) || file.name.endsWith('.xls') || file.name.endsWith('.xlsx');
-
-                if (!isExcelFile) {
-                    showToast('Por favor, envie um arquivo .xls ou .xlsx', 'error');
-                    handleFile(null);
-                    return;
-                }
-                if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
-                    showToast(`Arquivo excede o limite de ${MAX_FILE_SIZE_MB}MB.`, 'error');
-                    handleFile(null);
-                    return;
-                }
-                fileInput.files = e.dataTransfer.files;
-                handleFile(file);
-                showToast('Arquivo enviado com sucesso!', 'success');
-            }
-        });
-    };
-
-    // --- Function to check and set the comparison button state ---
-    /**
-     * Habilita/desabilita botão de comparação RD Station conforme uploads
-     */
-    const checkComparisonButtonState = () => {
-        const comparisonBtn = document.getElementById('rdStartComparisonBtn');
-        if (rdUploadState.agence && rdUploadState.outra) {
-            comparisonBtn.disabled = false;
-        } else {
-            comparisonBtn.disabled = true;
-        }
-    };
-
-    // --- Initialize all four uploaders ---
-    initializeUploader('leads');
-    initializeUploader('prospects');
-    initializeUploader('rdAgence', (isFileSelected) => {
-        rdUploadState.agence = isFileSelected;
-        checkComparisonButtonState();
-    });
-    initializeUploader('rdOutra', (isFileSelected) => {
-        rdUploadState.outra = isFileSelected;
-        checkComparisonButtonState();
+    // Clique no botão para abrir input
+    selectFileBtn.addEventListener('click', () => {
+        fileInput.click();
     });
 
-    // --- Event Delegation for Table Actions ---
-    const tabContent = document.getElementById('formattingTypeTabContent');
-    /**
-     * Delegação de eventos para ações nas tabelas de histórico
-     */
-    tabContent.addEventListener('click', (e) => {
-        const targetButton = e.target.closest('button');
-        if (!targetButton || !targetButton.closest('tbody')) {
+    // Mudança no input de arquivo
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        const validation = validateFile(file);
+        if (!validation.valid) {
+            showToast(validation.message, 'error');
+            fileInput.value = '';
+            updateFileState(null);
+            return;
+        }
+        updateFileState(file);
+    });
+
+    // Arrastar/soltar na área
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+    });
+    uploadArea.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+    });
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        const file = e.dataTransfer.files[0];
+        const validation = validateFile(file);
+        if (!validation.valid) {
+            showToast(validation.message, 'error');
+            fileInput.value = '';
+            updateFileState(null);
+            return;
+        }
+        // Atualiza input manualmente para manter consistência
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        fileInput.files = dataTransfer.files;
+        updateFileState(file);
+    });
+
+    // Lógica de formatação e envio
+    startFormattingBtn.addEventListener('click', () => {
+        const file = fileInput.files[0];
+        if (!file) {
+            showToast('Por favor, selecione uma planilha primeiro.', 'error');
+            return;
+        }
+        const validation = validateFile(file);
+        if (!validation.valid) {
+            showToast(validation.message, 'error');
             return;
         }
 
-        const action = targetButton.title;
-        const fileName = targetButton.closest('tr').querySelector('td:first-child').textContent;
+        startFormattingBtn.disabled = true;
+        startFormattingBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Formatando...';
 
-        if (action === 'Baixar') {
-            showToast(`Download iniciado para o arquivo: ${fileName}`, 'info');
-        } else if (action === 'Parar Processamento') {
-            showToast(`Processamento parado para o arquivo: ${fileName}`, 'info');
-        } else if (action === 'Deletar') {
-            if (confirm(`Tem certeza que deseja deletar o histórico de: ${fileName}?`)) {
-                targetButton.closest('tr').remove();
-                showToast(`Histórico de ${fileName} deletado.`, 'success');
+        const formData = new FormData();
+        formData.append('planilha', file);
+
+        fetch('http://127.0.0.1:5001/formatar-leads', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(async (response) => {
+            if (response.ok) {
+                const contentDisposition = response.headers.get('Content-Disposition');
+                let filename = 'formatado_' + file.name;
+                if (contentDisposition) {
+                    const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+                    if (filenameMatch && filenameMatch.length > 1) {
+                        filename = filenameMatch[1];
+                    }
+                }
+                const blob = await response.blob();
+                return { blob, filename };
+            } else {
+                const errorData = await response.json();
+                throw new Error(errorData.erro || 'Erro desconhecido no servidor.');
             }
-        }
+        })
+        .then(({ blob, filename }) => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            a.remove();
+            showToast('Planilha formatada e baixada com sucesso!', 'success');
+            // Limpa estado
+            fileInput.value = '';
+            updateFileState(null);
+        })
+        .catch((error) => {
+            console.error('Erro na formatação:', error);
+            showToast(`Falha na formatação: ${error.message}`, 'error');
+        })
+        .finally(() => {
+            startFormattingBtn.disabled = true;
+            startFormattingBtn.innerHTML = '<i class="fas fa-rocket me-2"></i>Iniciar Formatação de Leads';
+        });
     });
 });

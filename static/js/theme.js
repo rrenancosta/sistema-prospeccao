@@ -20,6 +20,12 @@ function updateThemeIcon(theme) {
     }
 }
 
+
 document.addEventListener('DOMContentLoaded', function() {
     initializeTheme();
+    // Adiciona o event listener para o botão de tema
+    const themeToggleBtn = document.getElementById('themeToggle');
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', toggleTheme);
+    }
 });
